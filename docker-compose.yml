@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  accounts:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app/
+    ports:
+      - "8801:8801"
+    env_file:
+      - ./config/env.accounts.local
+    command: npm start
+  users:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app/
+    ports:
+      - "8802:8802"
+    env_file:
+      - ./config/env.users.local
+    command: npm start
+  projects:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app/
+    ports:
+      - "8803:8803"
+    env_file:
+      - ./config/env.projects.local
+    command: npm start
+  assets:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app/
+    ports:
+      - "8804:8804"
+    env_file:
+      - ./config/env.assets.local
+    command: npm start

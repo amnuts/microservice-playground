@@ -1,0 +1,28 @@
+{
+  "name": "express_in_docker",
+  "version": "1.0.0",
+  "description": "Running an example express server in docker",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start-dockerless": "env-cmd ./config/env.${SERVICE_NAME}.local nodemon server.js",
+    "make-jwt": "env-cmd ./config/env.${SERVICE_NAME}.local node ./utils/make-jwt.js",
+    "make-seed": "node ./utils/make-seed.js"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "express-jwt": "^5.3.1",
+    "express-unless": "^0.5.0",
+    "graphql": "^14.1.1",
+    "lodash": "^4.17.11",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "env-cmd": "^8",
+    "faker": "^4.1.0",
+    "nodemon": "^1.18.9"
+  }
+}
