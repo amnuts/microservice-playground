@@ -4,9 +4,11 @@
   "description": "Running an example express server in docker",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "start-dockerless": "env-cmd ./config/env.${SERVICE_NAME}.local nodemon server.js",
-    "make-jwt": "env-cmd ./config/env.${SERVICE_NAME}.local node ./utils/make-jwt.js",
+    "service": "nodemon service.js",
+    "start-dockerless": "env-cmd ./config/env.${SERVICE_NAME}.local nodemon service.js",
+    "gateway": "nodemon gateway.js",
+    "gateway-dockerless": "env-cmd ./config/env.gateway.local nodemon gateway.js",
+    "make-jwt": "env-cmd ./config/env.gateway.local node ./utils/make-jwt.js",
     "make-seed": "node ./utils/make-seed.js"
   },
   "dependencies": {

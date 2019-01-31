@@ -1,6 +1,19 @@
-version: "3"
+version: "3.5"
 
 services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/usr/app/
+    ports:
+      - "8800:8800"
+    networks:
+      - microservice-cluster
+    env_file:
+      - ./config/env.gateway.local
+    command: ["npm", "run", "gateway"]
   accounts:
     build:
       context: .
@@ -9,9 +22,11 @@ services:
       - .:/usr/app/
     ports:
       - "8801:8801"
+    networks:
+      - microservice-cluster
     env_file:
       - ./config/env.accounts.local
-    command: npm start
+    command: ["npm", "run", "service"]
   users:
     build:
       context: .
@@ -20,9 +35,11 @@ services:
       - .:/usr/app/
     ports:
       - "8802:8802"
+    networks:
+      - microservice-cluster
     env_file:
       - ./config/env.users.local
-    command: npm start
+    command: ["npm", "run", "service"]
   projects:
     build:
       context: .
@@ -31,9 +48,11 @@ services:
       - .:/usr/app/
     ports:
       - "8803:8803"
+    networks:
+      - microservice-cluster
     env_file:
       - ./config/env.projects.local
-    command: npm start
+    command: ["npm", "run", "service"]
   assets:
     build:
       context: .
@@ -42,6 +61,13 @@ services:
       - .:/usr/app/
     ports:
       - "8804:8804"
+    networks:
+      - microservice-cluster
     env_file:
       - ./config/env.assets.local
-    command: npm start
+    command: ["npm", "run", "service"]
+
+networks:
+  microservice-cluster:
+    external: false
+    name: microservice-cluster

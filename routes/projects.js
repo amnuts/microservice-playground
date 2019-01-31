@@ -9,6 +9,9 @@ router
     .get('/:accountId', (req, res, next) => {
         return res.json(_.filter(mockData, { account_id: parseInt(req.params.accountId) }));
     })
+    .get('/:accountId/user/:userId', (req, res, next) => {
+        return res.json(_.filter(mockData, { user_id: parseInt(req.params.userId), account_id: parseInt(req.params.accountId) }));
+    })
     .get('/:accountId/:projectId', (req, res, next) => {
         return res.json(_.find(mockData, { id: req.params.projectId, account_id: parseInt(req.params.accountId) }));
     })
