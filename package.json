@@ -4,12 +4,15 @@
   "description": "Running an example express server in docker",
   "main": "server.js",
   "scripts": {
+    "pretest": "npm run lint",
     "service": "nodemon service.js",
     "start-dockerless": "env-cmd ./config/env.${SERVICE_NAME}.local nodemon service.js",
     "gateway": "nodemon gateway.js",
     "gateway-dockerless": "env-cmd ./config/env.gateway.local nodemon gateway.js",
     "make-jwt": "env-cmd ./config/env.gateway.local node ./utils/make-jwt.js",
-    "make-seed": "node ./utils/make-seed.js"
+    "make-seed": "node ./utils/make-seed.js",
+    "lint": "eslint . --ext js",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -24,7 +27,11 @@
   },
   "devDependencies": {
     "env-cmd": "^8",
+    "eslint": "^5.12.1",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
     "faker": "^4.1.0",
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.9",
+    "prettier": "^1.16.3"
   }
 }

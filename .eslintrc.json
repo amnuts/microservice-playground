@@ -1,0 +1,7 @@
+{
+    "extends": ["./linter-rules.json", "prettier"],
+    "plugins": ["prettier"],
+    "rules": {
+        "prettier/prettier": "error"
+    }
+}
