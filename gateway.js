@@ -56,7 +56,7 @@ app.get("/health/ping", (req, res) => {
       axios.spread(function(accounts, users, projects, assets) {
         return res.json({
           start: now,
-          gateway: Date.now(),
+          gateway: { pong: Date.now() },
           accounts: accounts.data,
           users: users.data,
           projects: projects.data,
@@ -78,11 +78,13 @@ app.use(
 // Catch-all error handling
 //
 
+/*
 app.use((req, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
 });
+*/
 
 app.use(function(err, req, res, next) {
   if (app.get("env") === "local") {
