@@ -1,0 +1,266 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a users API example",
+    "version": "1.0.0",
+    "title": "User API"
+  },
+  "servers": [
+    {
+      "url": "http://users:8802/users",
+      "description": "Docker microservice"
+    }
+  ],
+  "paths": {
+    "/users/{accountId}": {
+      "get": {
+        "summary": "get all the users",
+        "operationId": "getAllUsers",
+        "description": "Get all the users",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All users for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "add a user",
+        "operationId": "addUser",
+        "description": "Adds a user to the system",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserObject"
+              }
+            }
+          },
+          "description": "Details of user to add"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    },
+    "/users/{accountId}/{userId}": {
+      "get": {
+        "summary": "get a user",
+        "operationId": "getUser",
+        "description": "Get a user for the given account",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/userIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a user for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "summary": "update a user",
+        "operationId": "editUser",
+        "description": "Update a user",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/userIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserObject"
+              }
+            }
+          },
+          "description": "Details of user to add"
+        },
+        "responses": {
+          "200": {
+            "description": "Get a user for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "accountIdParam": {
+        "in": "path",
+        "name": "accountId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "The account ID"
+      },
+      "userIdParam": {
+        "in": "path",
+        "name": "userId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "The user ID"
+      }
+    },
+    "responses": {
+      "BadParameters": {
+        "description": "There were bad parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "UserObject": {
+        "type": "object",
+        "required": [
+          "first_name",
+          "last_name",
+          "created_at",
+          "modified_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "int32",
+            "example": 18
+          },
+          "account_id": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Bob"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Smith"
+          },
+          "added": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-26T09:12:33.001Z"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-29T09:14:01.001Z"
+          }
+        }
+      },
+      "ErrorObject": {
+        "required": [
+          "error",
+          "message",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "message": {
+            "type": "string",
+            "format": "string",
+            "example": "The flang couldn't snargle the flootswagon"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "example": 380
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

@@ -1,0 +1,322 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a assets API example",
+    "version": "1.0.0",
+    "title": "Assets API"
+  },
+  "servers": [
+    {
+      "url": "http://assets:8804/assets",
+      "description": "Docker microservice"
+    }
+  ],
+  "paths": {
+    "/assets/{accountId}": {
+      "get": {
+        "summary": "get all the assets",
+        "operationId": "getAllAssets",
+        "description": "Get all the assets",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All assets for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "add an asset",
+        "operationId": "addAsset",
+        "description": "Adds an asset to the system",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetObject"
+              }
+            }
+          },
+          "description": "Details of asset to add"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    },
+    "/assets/{accountId}/{projectId}": {
+      "get": {
+        "summary": "get assets for a project",
+        "operationId": "getAssetsForProject",
+        "description": "Get assets for the given project",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/projectIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get assets for the project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/assets/{accountId}/{projectId}/{assetId}": {
+      "get": {
+        "summary": "get specific asset",
+        "operationId": "getAsset",
+        "description": "Get specific asset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/projectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/assetIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get asset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "summary": "update an asset",
+        "operationId": "editAsset",
+        "description": "Update an asset",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/projectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/assetIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetObject"
+              }
+            }
+          },
+          "description": "Details of asset to update"
+        },
+        "responses": {
+          "200": {
+            "description": "Asset updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "accountIdParam": {
+        "in": "path",
+        "name": "accountId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "The account ID"
+      },
+      "projectIdParam": {
+        "in": "path",
+        "name": "projectId",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "The project ID"
+      },
+      "assetIdParam": {
+        "in": "path",
+        "name": "assetId",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "The asset ID"
+      }
+    },
+    "responses": {
+      "BadParameters": {
+        "description": "There were bad parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "AssetObject": {
+        "type": "object",
+        "required": [
+          "filename",
+          "user_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1e7ccb6b-14fc-4184-b721-413882cf7cf1"
+          },
+          "account_id": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "user_id": {
+            "type": "number",
+            "format": "int32",
+            "example": 22
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e11a5cde-8e12-49d1-8850-7a4f8896df1a"
+          },
+          "filename": {
+            "type": "string",
+            "example": "cool-pic.png"
+          },
+          "added": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-26T09:12:33.001Z"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-29T09:14:01.001Z"
+          }
+        }
+      },
+      "ErrorObject": {
+        "required": [
+          "error",
+          "message",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "message": {
+            "type": "string",
+            "format": "string",
+            "example": "The flang couldn't snargle the flootswagon"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "example": 380
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

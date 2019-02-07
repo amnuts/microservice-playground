@@ -1,0 +1,264 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a projects API example",
+    "version": "1.0.0",
+    "title": "Projects API"
+  },
+  "servers": [
+    {
+      "url": "http://projects:8803/projects",
+      "description": "Docker microservice"
+    }
+  ],
+  "paths": {
+    "/projects/{accountId}": {
+      "get": {
+        "summary": "get all the projects",
+        "operationId": "getAllProjects",
+        "description": "Get all the projects",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All projects for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "summary": "add a project",
+        "operationId": "addProject",
+        "description": "Adds a project to the system",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectObject"
+              }
+            }
+          },
+          "description": "Details of project to add"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    },
+    "/projects/{accountId}/{projectId}": {
+      "get": {
+        "summary": "get a project",
+        "operationId": "getProject",
+        "description": "Get a project for the given account",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/projectIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a project for the account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "summary": "update a project",
+        "operationId": "editProject",
+        "description": "Update a project",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/projectIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectObject"
+              }
+            }
+          },
+          "description": "Details of project to add"
+        },
+        "responses": {
+          "200": {
+            "description": "Project details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "accountIdParam": {
+        "in": "path",
+        "name": "accountId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "The account ID"
+      },
+      "projectIdParam": {
+        "in": "path",
+        "name": "projectId",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "description": "The project ID"
+      }
+    },
+    "responses": {
+      "BadParameters": {
+        "description": "There were bad parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ProjectObject": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": 18
+          },
+          "account_id": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "user_id": {
+            "type": "number",
+            "format": "int32",
+            "example": 22
+          },
+          "title": {
+            "type": "string",
+            "example": "Bob"
+          },
+          "added": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-26T09:12:33.001Z"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-29T09:14:01.001Z"
+          }
+        }
+      },
+      "ErrorObject": {
+        "required": [
+          "error",
+          "message",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "message": {
+            "type": "string",
+            "format": "string",
+            "example": "The flang couldn't snargle the flootswagon"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "example": 380
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}

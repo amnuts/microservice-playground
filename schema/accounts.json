@@ -1,0 +1,240 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is a accounts API example",
+    "version": "1.0.0",
+    "title": "Accounts API"
+  },
+  "servers": [
+    {
+      "url": "http://accounts:8801/accounts",
+      "description": "Docker microservice"
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "summary": "get all the accounts",
+        "operationId": "getAllAccounts",
+        "description": "Get all the accounts",
+        "responses": {
+          "200": {
+            "description": "All the accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountObject"
+                  }
+                }
+              }
+            },
+            "links": {
+              "users": {
+                "description": "Get the users that are associated to the account",
+                "operationId": "getAllUsers",
+                "parameters": {
+                  "accountId": "$response.body#/id"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "add an account",
+        "operationId": "addAccount",
+        "description": "Adds an account to the system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountObject"
+              }
+            }
+          },
+          "description": "Details of account to add"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    },
+    "/accounts/{accountId}": {
+      "get": {
+        "summary": "get an account",
+        "operationId": "getAccount",
+        "description": "Get a specific account",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A specific account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountObject"
+                }
+              }
+            },
+            "links": {
+              "users": {
+                "description": "Get the users that are associated to the account",
+                "operationId": "getAllUsers",
+                "parameters": {
+                  "accountId": "$response.body#/id"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "summary": "update an account",
+        "operationId": "editAccount",
+        "description": "Update hte account details",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/accountIdParam"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountObject"
+              }
+            }
+          },
+          "description": "Details of account to add"
+        },
+        "responses": {
+          "200": {
+            "description": "The updated account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadParameters"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "accountIdParam": {
+        "in": "path",
+        "name": "accountId",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "description": "The account ID"
+      }
+    },
+    "responses": {
+      "BadParameters": {
+        "description": "There were bad parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorObject"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "AccountObject": {
+        "type": "object",
+        "required": [
+          "company"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "int32",
+            "example": 4
+          },
+          "company": {
+            "type": "string",
+            "example": "Barnacle & Sons"
+          },
+          "added": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-26T09:12:33.001Z"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2016-08-29T09:14:01.001Z"
+          }
+        }
+      },
+      "ErrorObject": {
+        "required": [
+          "error",
+          "message",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "message": {
+            "type": "string",
+            "format": "string",
+            "example": "The flang couldn't snargle the flootswagon"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "example": 380
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
