@@ -1,110 +1,117 @@
 const express = require("express");
 const graphqlHTTP = require("express-graphql");
+const { createGraphQlSchema } = require("oasgraph");
 const jwt = require("express-jwt");
 const cors = require("cors");
 const axios = require("axios");
-const schema = require("./schema/schema");
 const urls = require("./schema/urls");
+const { mergeJSON } = require("./utils/merge-json");
 
-const app = express();
+const specAccounts = require("./schema/accounts.json");
+const specUsers = require("./schema/users.json");
+const mergedSpec = mergeJSON(specAccounts, specUsers);
 
-app.use(cors());
-app.options("*", cors());
+async function main(spec) {
+    const { schema, report } = await createGraphQlSchema(spec);
+    const app = express();
 
-//
-// Setup for JWT and error/route handling
-//
+    app.use(cors());
+    app.options("*", cors());
 
-app.use(
-  jwt({
-    secret: process.env.JWT_HASH,
-    credentialsRequired: true
-  }).unless({
-    path: ["/health/ping", "/graphql"]
-  })
-);
-
-app.use(function(req, res, next) {
-  if (
-    req.hasOwnProperty("user") &&
-    (!req.user.payload.account_id || !req.user.payload.user_id)
-  ) {
-    res.status(401).send("invalid payload...");
-    return;
-  }
-  next();
-});
-
-app.get("/health/ping", (req, res) => {
-  let now = Date.now();
-  return axios
-    .all([
-      axios.get(`${urls.accountsHealth}/ping`).catch(function(e) {
-        console.log("Error " + e.message);
-      }),
-      axios.get(`${urls.usersHealth}/ping`).catch(function(e) {
-        console.log("Error " + e.message);
-      }),
-      axios.get(`${urls.projectsHealth}/ping`).catch(function(e) {
-        console.log("Error " + e.message);
-      }),
-      axios.get(`${urls.assetsHealth}/ping`).catch(function(e) {
-        console.log("Error " + e.message);
-      })
-    ])
-    .then(
-      axios.spread(function(accounts, users, projects, assets) {
-        return res.json({
-          start: now,
-          gateway: { pong: Date.now() },
-          accounts: accounts.data,
-          users: users.data,
-          projects: projects.data,
-          assets: assets.data
-        });
-      })
+    //
+    // Setup for JWT and error/route handling
+    //
+    app.use(
+        jwt({
+            secret: process.env.JWT_HASH,
+            credentialsRequired: true
+        }).unless({
+            path: ["/health/ping", "/graphql"]
+        })
     );
-});
 
-app.use(
-  "/graphql",
-  graphqlHTTP({
-    schema,
-    graphiql: true
-  })
-);
+    app.use(function(req, res, next) {
+        if (
+            req.hasOwnProperty("user") &&
+            (!req.user.payload.account_id || !req.user.payload.user_id)
+        ) {
+            res.status(401).send("invalid payload...");
+            return;
+        }
+        next();
+    });
 
-//
-// Catch-all error handling
-//
+    app.get("/health/ping", (req, res) => {
+        let now = Date.now();
+        return axios
+            .all([
+                axios.get(`${urls.accountsHealth}/ping`).catch(function(e) {
+                    console.log("Error " + e.message);
+                }),
+                axios.get(`${urls.usersHealth}/ping`).catch(function(e) {
+                    console.log("Error " + e.message);
+                }),
+                axios.get(`${urls.projectsHealth}/ping`).catch(function(e) {
+                    console.log("Error " + e.message);
+                }),
+                axios.get(`${urls.assetsHealth}/ping`).catch(function(e) {
+                    console.log("Error " + e.message);
+                })
+            ])
+            .then(
+                axios.spread(function(accounts, users, projects, assets) {
+                    return res.json({
+                        start: now,
+                        gateway: { pong: Date.now() },
+                        accounts: accounts.data,
+                        users: users.data,
+                        projects: projects.data,
+                        assets: assets.data
+                    });
+                })
+            );
+    });
 
-/*
-app.use((req, res, next) => {
-  const err = new Error("Not Found");
-  err.status = 404;
-  next(err);
-});
-*/
+    app.use(
+        "/graphql",
+        graphqlHTTP({
+            schema,
+            graphiql: true
+        })
+    );
 
-app.use(function(err, req, res, next) {
-  if (app.get("env") === "local") {
-    console.log(err);
-  }
-  if (err.name === "UnauthorizedError") {
-    res.status(401).send("invalid token");
-  }
-  if (err.name === "MissingRequiredElements") {
-    res.status(400).send("missing some required elements");
-  }
-  res.status(err.status || 500).send();
-});
+    //
+    // Catch-all error handling
+    //
 
-//
-// Start the listening
-//
+    app.use((req, res, next) => {
+      const err = new Error("Not Found");
+      err.status = 404;
+      next(err);
+    });
 
-let server = app.listen(process.env.SERVICE_PORT, function() {
-  console.log(
-    `gateway listening on ${server.address().address}:${server.address().port}`
-  );
-});
+    app.use(function(err, req, res, next) {
+        if (app.get("env") === "local") {
+            console.log(err);
+        }
+        if (err.name === "UnauthorizedError") {
+            res.status(401).send("invalid token");
+        }
+        if (err.name === "MissingRequiredElements") {
+            res.status(400).send("missing some required elements");
+        }
+        res.status(err.status || 500).send();
+    });
+
+    //
+    // Start the listening
+    //
+
+    let server = app.listen(process.env.SERVICE_PORT, function() {
+        console.log(
+            `gateway listening on ${server.address().address}:${server.address().port}`
+        );
+    });
+};
+
+main(mergedSpec);
