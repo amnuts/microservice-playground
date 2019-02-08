@@ -5,11 +5,14 @@ const jwt = require("express-jwt");
 const cors = require("cors");
 const axios = require("axios");
 const urls = require("./schema/urls");
-const { mergeJSON } = require("./utils/merge-json");
+const { mergeSpecifications } = require("./utils/merge-json");
 
-const specAccounts = require("./schema/accounts.json");
-const specUsers = require("./schema/users.json");
-const mergedSpec = mergeJSON(specAccounts, specUsers);
+let specAccounts = require("./schema/accounts.json");
+let specUsers = require("./schema/users.json");
+let specProjects = require("./schema/projects.json");
+let specAssets = require("./schema/assets.json");
+
+let mergedSpec = mergeSpecifications(specAccounts, specUsers, specProjects, specAssets);
 
 async function main(spec) {
     const { schema, report } = await createGraphQlSchema(spec);

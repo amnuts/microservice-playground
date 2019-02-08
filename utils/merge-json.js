@@ -1,28 +1,24 @@
 /*
- * Jacob Fricke
+ * Some of this from Jacob Fricke
  * https://github.com/jacob418/node_json-merge
  */
 
-var jsonC = {}.constructor;
+let jsonC = {}.constructor;
 
-var isJSON = function(json) {
+let isJSON = function(json) {
   return json && json.constructor === jsonC;
 };
 
-exports.isJSON = isJSON;
-
-var cloneJSON = function(data) {
+let cloneJSON = function(data) {
   return mergeJSON({}, data);
 };
 
-exports.cloneJSON = cloneJSON;
-
-var mergeJSON = function(json1, json2) {
-  var result = null;
+let mergeJSON = function(json1, json2) {
+  let result = null;
   if (isJSON(json2)) {
     result = {};
     if (isJSON(json1)) {
-      for (var key in json1) {
+      for (let key in json1) {
         if (isJSON(json1[key]) || Array.isArray(json1[key])) {
           result[key] = cloneJSON(json1[key]);
         } else {
@@ -30,8 +26,7 @@ var mergeJSON = function(json1, json2) {
         }
       }
     }
-
-    for (var key in json2) {
+    for (let key in json2) {
       if (isJSON(json2[key]) || Array.isArray(json2[key])) {
         result[key] = mergeJSON(result[key], json2[key]);
       } else {
@@ -40,8 +35,7 @@ var mergeJSON = function(json1, json2) {
     }
   } else if (Array.isArray(json1) && Array.isArray(json2)) {
     result = json1;
-
-    for (var i = 0; i < json2.length; i++) {
+    for (let i = 0; i < json2.length; i++) {
       if (result.indexOf(json2[i]) === -1) {
         result[result.length] = json2[i];
       }
@@ -53,4 +47,28 @@ var mergeJSON = function(json1, json2) {
   return result;
 };
 
-exports.mergeJSON = mergeJSON;
+let mergeSpecifications = function() {
+  let merged = {};
+  for (let s = 0; s < arguments.length; s++) {
+    let spec = arguments[s];
+    if (spec.hasOwnProperty("servers")) {
+      let servers = arguments[s].servers;
+      Object.keys(spec.paths).forEach(p => {
+        Object.keys(spec.paths[p]).forEach(v => {
+          if (!spec.paths[p][v].hasOwnProperty("servers")) {
+            spec.paths[p][v].servers = servers;
+          }
+        });
+      });
+    }
+    merged = mergeJSON(merged, spec);
+  }
+  return merged;
+};
+
+module.exports = {
+  isJSON,
+  cloneJSON,
+  mergeJSON,
+  mergeSpecifications
+};
