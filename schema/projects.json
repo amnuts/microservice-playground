@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://projects:8803/projects",
+      "url": "http://projects:8803/",
       "description": "Docker microservice"
     }
   ],

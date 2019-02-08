@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://accounts:8801/accounts",
+      "url": "http://accounts:8801/",
       "description": "Docker microservice"
     }
   ],
@@ -35,7 +35,7 @@
                 "description": "Get the users that are associated to the account",
                 "operationId": "getAllUsers",
                 "parameters": {
-                  "accountId": "$response.body#/id"
+                  "accountId": "$response.body#/accounts[0].id"
                 }
               }
             }

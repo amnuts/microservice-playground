@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://assets:8804/assets",
+      "url": "http://assets:8804/",
       "description": "Docker microservice"
     }
   ],

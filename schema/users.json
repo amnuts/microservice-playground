@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://users:8802/users",
+      "url": "http://users:8802/",
       "description": "Docker microservice"
     }
   ],
@@ -42,7 +42,13 @@
           "404": {
             "$ref": "#/components/responses/NotFound"
           }
-        }
+        },
+        "servers": [
+          {
+            "url": "http://users:8802/",
+            "description": "Docker microservice"
+          }
+        ]
       },
       "post": {
         "summary": "add a user",
