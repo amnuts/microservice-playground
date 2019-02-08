@@ -88,22 +88,44 @@ async function main(spec) {
     //
 
     app.use((req, res, next) => {
-      const err = new Error("Not Found");
-      err.status = 404;
-      next(err);
+      next(new Error("NotFound"));
     });
 
     app.use(function(err, req, res, next) {
         if (app.get("env") === "local") {
             console.log(err);
         }
+        let errRes = {
+            name: err.name,
+            code: 1,
+            message: ""
+        };
+        if (err.name === "NotFound") {
+            res.status(404).json({
+                name: err.name,
+                code: 404,
+                message: "Resource not found"
+            });
+        }
         if (err.name === "UnauthorizedError") {
-            res.status(401).send("invalid token");
+            res.status(401).json({
+                name: err.name,
+                code: 401,
+                message: "Unauthorized access"
+            });
         }
         if (err.name === "MissingRequiredElements") {
-            res.status(400).send("missing some required elements");
+            res.status(400).json({
+                name: err.name,
+                code: 400,
+                message: "missing some required elements"
+            });
         }
-        res.status(err.status || 500).send();
+        res.status(err.status || 500).json({
+            name: err.name,
+            code: err.status || 500,
+            message: "Something went wrong"
+        });
     });
 
     //

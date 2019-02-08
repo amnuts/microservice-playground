@@ -254,7 +254,7 @@
         "type": "object",
         "required": [
           "filename",
-          "user_id"
+          "userId"
         ],
         "properties": {
           "id": {
@@ -262,17 +262,17 @@
             "format": "uuid",
             "example": "1e7ccb6b-14fc-4184-b721-413882cf7cf1"
           },
-          "account_id": {
+          "accountId": {
             "type": "number",
             "format": "int32",
             "example": 5
           },
-          "user_id": {
+          "userId": {
             "type": "number",
             "format": "int32",
             "example": 22
           },
-          "project_id": {
+          "projectId": {
             "type": "string",
             "format": "uuid",
             "example": "e11a5cde-8e12-49d1-8850-7a4f8896df1a"

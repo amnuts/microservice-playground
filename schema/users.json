@@ -207,8 +207,8 @@
       "UserObject": {
         "type": "object",
         "required": [
-          "first_name",
-          "last_name",
+          "firstName",
+          "lastName",
           "created_at",
           "modified_at"
         ],
@@ -218,16 +218,16 @@
             "format": "int32",
             "example": 18
           },
-          "account_id": {
+          "accountId": {
             "type": "number",
             "format": "int32",
             "example": 5
           },
-          "first_name": {
+          "firstName": {
             "type": "string",
             "example": "Bob"
           },
-          "last_name": {
+          "lastName": {
             "type": "string",
             "example": "Smith"
           },

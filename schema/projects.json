@@ -209,12 +209,12 @@
             "format": "uuid",
             "example": 18
           },
-          "account_id": {
+          "accountId": {
             "type": "number",
             "format": "int32",
             "example": 5
           },
-          "user_id": {
+          "userId": {
             "type": "number",
             "format": "int32",
             "example": 22
